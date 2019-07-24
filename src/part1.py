@@ -56,6 +56,8 @@ for o, p in zip(lines, range(len(lines))):
     if '' == o:
         paragraphlst.append(p)
 
+provinceinfo = []
+timeinfo = []
 f = open("output.txt", "w+")
 for w in smokelist:
     toFindSmoke = w
@@ -69,11 +71,10 @@ for w in smokelist:
         nameinList = difflib.get_close_matches(z, namelst, n=1, cutoff=.6)
         if len(nameinList) > 0:
             universalIndex = namelst.index(nameinList[0])
-            print(sitelst[universalIndex], provincelst[universalIndex], z)
-    reportLocation = lines[start + 1].split(" ")[1]
-    if lines[start].startswith("*"):
-        localtime = convertTime(lines[start].replace("*", ""))
-        lines[start] = localtime.strftime("%Y/%m/%d %H:%M:00 %p")
+            provincei = sitelst[universalIndex] + "," + provincelst[universalIndex] + "," + namelst[universalIndex]
+            provinceinfo.append(provincei)
+
+    #    print(provinceinfo+timeinfo)
 
     for a in lines[start:end]:
         f.write(a)
