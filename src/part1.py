@@ -58,7 +58,7 @@ for o, p in zip(lines, range(len(lines))):
 
 provinceinfo = []
 timeinfo = []
-f = open("output.txt", "w+")
+f = open("outputNoSpace.txt", "w+")
 for w in smokelist:
     toFindSmoke = w
     upperSpace = min([i for i in paragraphlst if i >= toFindSmoke], key=lambda x: abs(x - toFindSmoke))
@@ -78,8 +78,8 @@ for w in smokelist:
 
     for a in lines[start:end]:
         f.write(a)
-        f.write("\n")
+        # f.write("\n")
     for b in lines[lowerSpace:upperSpace + 1]:
         f.write(b)
-        f.write("\n")
-    f.write("\n")
+        # f.write("\n")
+    #f.write("\n")

@@ -1,6 +1,7 @@
 import nltk
 
-ss = """At eight o'clock on Thursday morning Arthur didn't feel very good."""
+ss = open("output.txt").read()
 tokens = nltk.word_tokenize(ss)
 tag = nltk.pos_tag(tokens)
-print(tag)
+for t in tag:
+    print(t[0], t[1])
