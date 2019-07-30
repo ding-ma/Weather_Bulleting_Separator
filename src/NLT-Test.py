@@ -1,7 +1,4 @@
-import nltk
+import pandas as pd
 
-ss = open("output.txt").read()
-tokens = nltk.word_tokenize(ss)
-tag = nltk.pos_tag(tokens)
-for t in tag:
-    print(t[0], t[1])
+df = pd.read_clipboard()
+print(df)
