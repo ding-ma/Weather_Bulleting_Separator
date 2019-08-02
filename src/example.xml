@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<forecastAirQuality productHeader="AQ_FCST" status="issued">
+    <region nameEn="Montréal" nameFr="Montréal">EHHUN</region>
+    <dateStamp name="aqForecastIssued" zoneEn="EDT" zoneFr="HAE">
+        <year>2019</year>
+        <month nameEn="April" nameFr="avril">4</month>
+        <day nameEn="Tuesday" nameFr="mardi">16</day>
+        <hour clock="12h" ampm="PM">4</hour>
+        <minute>0</minute>
+        <second/>
+        <UTCStamp>20190416200000</UTCStamp>
+        <textSummary lang="EN">4:00 PM EDT Tuesday 16 April 2019</textSummary>
+        <textSummary lang="FR">16h00 HAE mardi 16 avril 2019</textSummary>
+    </dateStamp>
+    <nextIssue>
+        <UTCStamp>201904170900</UTCStamp>
+    </nextIssue>
+    <warningGroup>
+    </warningGroup>
+    <forecastGroup>
+        <forecast periodID="2">
+            <period forecastName="Tonight" lang="EN">Tuesday night</period>
+            <period forecastName="Ce soir" lang="FR">mardi soir et nuit</period>
+            <airQualityHealthIndex>2 in smoke</airQualityHealthIndex>
+        </forecast>
+        <forecast periodID="3">
+            <period forecastName="Tomorrow" lang="EN">Wednesday</period>
+            <period forecastName="Demain" lang="FR">mercredi</period>
+            <airQualityHealthIndex>3 in smoke</airQualityHealthIndex>
+        </forecast>
+    </forecastGroup>
+    <hourlyForecastGroup>
+        <hourlyForecast UTCTime="20190416200000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190416210000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190416220000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190416230000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190417000000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190417010000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190417020000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190417030000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190417040000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190417050000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190417060000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190417070000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190417080000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190417090000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190417100000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190417110000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190417120000">2</hourlyForecast>
+        <hourlyForecast UTCTime="20190417130000">2</hourlyForecast>
+    </hourlyForecastGroup>
+</forecastAirQuality>
