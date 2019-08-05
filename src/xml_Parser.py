@@ -1,4 +1,5 @@
 import csv
+import datetime
 import os
 import re
 import xml.etree.ElementTree as ET
@@ -34,10 +35,10 @@ def paireCalculator(time, forecast):
     if time == "PM" and forecast == "Tomorrow":
         return "5"
     else:
-        return "---"
+        return "-"
 
 
-templist = ["Site,Province,Paire,CASe"]
+templist = ["Site,Province,isueTime,AM_PM,Paire,CASe"]
 # file in, add loop for later
 for f in os.listdir("process"):
     print(f)
@@ -47,6 +48,8 @@ for f in os.listdir("process"):
     time = ""
     site = ""
     province = ""
+    issuetime = ""
+    format24h = ""
     # finds initial informaiton
     for region in root:
         if region.tag == "region":
@@ -56,9 +59,14 @@ for f in os.listdir("process"):
             site = ident[0].strip()
             province = ident[1].strip()
         if region.tag == "dateStamp":
-            print(region[0].text, "month:" + region[1].text, "day:" + region[2].text,
-                  region[3].text + region[3].attrib['ampm'])
+            # print(region[0].text, "month:" + region[1].text, "day:" + region[2].text,
+            #       region[3].text + region[3].attrib['ampm'])
+            if region[3].attrib['ampm'] == "PM":
+                format24h = int(region[3].text) + 12
+            else:
+                format24h = int(region[3].text)
             time = region[3].attrib['ampm']
+            issuetime = datetime.datetime(int(region[0].text), int(region[1].text), int(region[2].text), int(format24h))
 
     print("-----")
     # find in smoke
@@ -69,11 +77,15 @@ for f in os.listdir("process"):
         a = paireCalculator(time, insmoke[0].attrib['forecastName'])
         print(a)
         if len(case) is 2:
-            templist.append(site + "," + province + "," + a + "," + case[0] + case[1])
-            print(site + "," + province + "," + a + "," + case[0] + case[1])
+            towrite = site + "," + province + "," + issuetime.strftime(
+                "%Y/%m/%d %H:00:00") + "," + time + "," + a + "," + case[0] + case[1]
+            templist.append(towrite)
+            print(towrite)
         else:
-            templist.append(site + "," + province + "," + a + "," + case[0])
-            print(site + "," + province + "," + a + "," + case[0])
+            towrite1 = site + "," + province + "," + issuetime.strftime(
+                "%Y/%m/%d %H:00:00") + "," + time + "," + a + "," + case[0]
+            templist.append(towrite1)
+            print(towrite1)
     print("-----------------------------------------------------------------------------------")
 
 csvFile = open("out.csv", "w+")
