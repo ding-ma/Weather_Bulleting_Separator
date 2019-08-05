@@ -21,7 +21,7 @@ def fixtime(time):
     day = time[4]
     time_12h = time[0] + " " + time[1].replace(".", "")
     yearMonthDay = datetime.strptime(year + " " + str(month) + " " + str(day) + " " + time_12h,
-                                     "%Y %m %d %I:%M %p").strftime("%Y%m%d-%H%M")
+                                     "%Y %m %d %I:%M %p").strftime("%p-%Y%m%d-%H%M")
     return yearMonthDay
 
 
@@ -38,7 +38,7 @@ for a, b in zip(start.finditer(file), end.finditer(file)):
 
 for fileName, filecontent in zip(templst, startofFile):
     f = open("FLCN/" + fileName + ".txt", "w+")
-    f.write(file[filecontent[0]:filecontent[1]])
+    f.write(file[filecontent[0]:filecontent[1]].replace("SMOG WARNING IN EFFECT.\n", ""))
 
 repeatedFiles = [item for item, count in collections.Counter(t).items() if count > 1]
 print("These Files are the Same")
