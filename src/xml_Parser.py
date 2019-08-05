@@ -1,4 +1,5 @@
 import csv
+import os
 import re
 import xml.etree.ElementTree as ET
 
@@ -20,20 +21,61 @@ for x in range(len(reader)):
 lstcombo = zip(lstsite, lstprov)
 codestationdict = dict(zip(lstcode, lstcombo))
 
+
+def paireCalculator(time, forecast):
+    if time == "AM" and forecast == "Today":
+        return "1"
+    if time == "AM" and forecast == "Tonight":
+        return "2"
+    if time == "AM" and forecast == "Tomorrow":
+        return "3"
+    if time == "PM" and (forecast == "Tonight" or forecast == "Today"):
+        return "4"
+    if time == "PM" and forecast == "Tomorrow":
+        return "5"
+    else:
+        return "---"
+
+
+templist = ["Site,Province,Paire,CASe"]
 # file in, add loop for later
-tree = ET.ElementTree(file="example.xml")
-root = tree.getroot()
+for f in os.listdir("process"):
+    print(f)
+    tree = ET.ElementTree(file="process/" + f)
+    root = tree.getroot()
 
-# finds initial informaiton
-for region in root:
-    if region.tag == "region":
-        print(region.attrib['nameEn'], codestationdict[region.text])
-    if region.tag == "dateStamp":
-        print(region[0].text, "month:" + region[1].text, "day:" + region[2].text,
-              region[3].text + region[3].attrib['ampm'])
+    time = ""
+    site = ""
+    province = ""
+    # finds initial informaiton
+    for region in root:
+        if region.tag == "region":
+            ident = codestationdict[region.text]
+            print(region.attrib['nameEn'], ident)
 
-print("-----")
-# find in smoke
-for insmoke in root[4]:
-    print(insmoke[0].attrib['forecastName'])
-    print("CASe: " + re.findall("\d", insmoke[2].text)[0])
+            site = ident[0].strip()
+            province = ident[1].strip()
+        if region.tag == "dateStamp":
+            print(region[0].text, "month:" + region[1].text, "day:" + region[2].text,
+                  region[3].text + region[3].attrib['ampm'])
+            time = region[3].attrib['ampm']
+
+    print("-----")
+    # find in smoke
+    for insmoke in root[4]:
+        print(insmoke[0].attrib['forecastName'])
+        case = re.findall("\d", insmoke[2].text)
+        print("CASe: " + str(case))
+        a = paireCalculator(time, insmoke[0].attrib['forecastName'])
+        print(a)
+        if len(case) is 2:
+            templist.append(site + "," + province + "," + a + "," + case[0] + case[1])
+            print(site + "," + province + "," + a + "," + case[0] + case[1])
+        else:
+            templist.append(site + "," + province + "," + a + "," + case[0])
+            print(site + "," + province + "," + a + "," + case[0])
+    print("-----------------------------------------------------------------------------------")
+
+csvFile = open("out.csv", "w+")
+for i in templist:
+    csvFile.write(i + "\n")
