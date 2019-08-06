@@ -2,19 +2,34 @@ import calendar
 import collections
 import os
 import re
+import shutil
 import sys
-import time
 from datetime import datetime
 
 import pandas as pd
 
-s = time.time()
+# if the script crashes due to 'ValueError'>: time data '2012 1 1 5.00 AM' does not match format '%Y %m %d %I:%M %p')
+# check def fixtime(time):
+
+
 # part 1 of script, separates the bulletin per day
+loc = os.getcwd()
+
+dirs = ["Input", "Output", "FLCN"]
+for dir in dirs:
+    if not os.path.exists(loc + "/" + dir):
+        os.mkdir(loc + "/" + dir)
 
 monthdict = dict((v, k) for k, v in enumerate(calendar.month_name))
-filein = "2019-08-05_14-10-26_FLCN41_bulletin_messages.txt"
-file = open(filein, "r").read()
-beginingofdate = re.compile("AT(\n)?(.+(2019|2018))")
+print("Select the name of the file you would like to treat and press enter\n")
+for F in os.listdir(loc + "/Input"):
+    if not os.path.exists(loc + "/FLCN"):
+        os.mkdir(loc + "/FLCN")
+    print(F)
+print("\n")
+filein = input()
+file = open("Input/" + filein, "r").read()
+beginingofdate = re.compile("AT(\n)?(.+(201\d))")
 # LCN41 CWUL (.*\n)*(END)\n\nFLCN41
 start = re.compile("FLCN41 CWUL")
 end = re.compile("END")
@@ -29,7 +44,7 @@ def fixtime(time):
     day = time[4]
     time_12h = time[0] + " " + time[1].replace(".", "")
     yearMonthDay = datetime.strptime(year + " " + str(month) + " " + str(day) + " " + time_12h,
-                                     "%Y %m %d %I:%M %p").strftime("%p-%Y%m%d-%H%M")
+                                     "%Y %m %d %I.%M %p").strftime("%p-%Y%m%d-%H%M")
     return yearMonthDay
 
 
@@ -115,7 +130,7 @@ def progress(count, total, suffix=''):
     filled_len = int(round(bar_len * count / float(total)))
     percents = round(100.0 * count / float(total), 1)
     bar = '=' * filled_len + '-' * (bar_len - filled_len)
-    sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', suffix))
+    sys.stdout.write('[%s] %s%s %s\r' % (bar, percents, '%', suffix))
     sys.stdout.flush()
 
 
@@ -135,7 +150,8 @@ for files, amd in zip(os.listdir("FLCN"), lstofAmendment):
     AM_PM = files[:2]
     f = open("FLCN/" + files).read()
     k = k + 1
-    progress(k, prog, '')
+    # progress(k, prog, '')
+    print(k / prog)
     # expands regex list
     for reg in regex_lst:
         # uses every regex to find what they need
@@ -157,8 +173,7 @@ for files, amd in zip(os.listdir("FLCN"), lstofAmendment):
                         df.loc[i] = [region, yearHour[0], yearHour[1], Paire, Indince, "NO"]
                     i = i + 1
 
-print(df)
 # save dataFrame to csv
-df.to_csv("123.csv", index=False, index_label=False)
-e = time.time()
-print(e - s)
+df.to_csv("Output/treated_" + filein[:-4] + ".csv", index=False, index_label=False)
+print("Job Done see -->" + loc + "/output")
+shutil.rmtree(loc + "/FLCN")
