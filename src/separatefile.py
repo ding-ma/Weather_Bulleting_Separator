@@ -11,7 +11,6 @@ start = re.compile("FLCN41 CWUL")
 end = re.compile("END")
 templst = []
 datelst = []
-
 t = []
 
 
