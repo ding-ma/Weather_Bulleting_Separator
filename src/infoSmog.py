@@ -2,7 +2,6 @@ import calendar
 import collections
 import os
 import re
-import shutil
 import sys
 from datetime import datetime
 
@@ -19,39 +18,41 @@ dirs = ["Input", "Output", "FLCN"]
 for dir in dirs:
     if not os.path.exists(loc + "/" + dir):
         os.mkdir(loc + "/" + dir)
-
 monthdict = dict((v, k) for k, v in enumerate(calendar.month_name))
 print("Select the name of the file you would like to treat and press enter\n")
 for F in os.listdir(loc + "/Input"):
-    if not os.path.exists(loc + "/FLCN"):
-        os.mkdir(loc + "/FLCN")
+    if not os.path.exists(loc + "/Input"):
+        os.mkdir(loc + "/Input")
     print(F)
-print("\n")
-filein = input()
+
+filein = "2018.txt"
 file = open("Input/" + filein, "r").read()
-beginingofdate = re.compile("AT(\n)?(.+(201\d))")
+beginingofdate = re.compile(("AT(\n.*|.*|.*\n.*)\d{4}"))
 # LCN41 CWUL (.*\n)*(END)\n\nFLCN41
-start = re.compile("FLCN41 CWUL")
+start = re.compile("FLCN41 CWUL \d{6}( AA.)?")
 end = re.compile("END")
 templst = []
 datelst = []
 t = []
-
 
 def fixtime(time):
     year = time[6]
     month = monthdict[time[5].capitalize()]
     day = time[4]
     time_12h = time[0] + " " + time[1].replace(".", "")
-    yearMonthDay = datetime.strptime(year + " " + str(month) + " " + str(day) + " " + time_12h,
-                                     "%Y %m %d %I.%M %p").strftime("%p-%Y%m%d-%H%M")
+    try:
+        yearMonthDay = datetime.strptime(year + " " + str(month) + " " + str(day) + " " + time_12h,
+                                         "%Y %m %d %I.%M %p").strftime("%p-%Y%m%d-%H%M")
+    except ValueError:
+        yearMonthDay = datetime.strptime(year + " " + str(month) + " " + str(day) + " " + time_12h,
+                                         "%Y %m %d %I:%M %p").strftime("%p-%Y%m%d-%H%M")
     return yearMonthDay
 
 
 for y in start.finditer(file):
     yearstr = file[y.start():y.end() + 410]
     for s in beginingofdate.finditer(yearstr):
-        fixedTime = fixtime(yearstr[s.start() + 3:s.end()].split(" "))
+        fixedTime = fixtime(re.split("\n|\s", yearstr[s.start() + 3:s.end()]))
         t.append(yearstr[s.start() + 3:s.end()])
         templst.append(fixedTime)
 
@@ -166,6 +167,7 @@ for files, amd in zip(os.listdir("FLCN"), lstofAmendment):
                     yearHour = fixdate(date[1] + date[2])
                     Paire = pairValuefinder(dayWrite.group(), AM_PM)
                     Indince = ind.group()
+                    # print(files,AM_PM,region, yearHour[0], yearHour[1], Paire, Indince)
                     # checks if it is amanded, add to dataFrame
                     if bool(re.search("AA.", amd)) is True:
                         df.loc[i] = [region, yearHour[0], yearHour[1], Paire, Indince, "YES"]
@@ -176,4 +178,4 @@ for files, amd in zip(os.listdir("FLCN"), lstofAmendment):
 # save dataFrame to csv
 df.to_csv("Output/treated_" + filein[:-4] + ".csv", index=False, index_label=False)
 print("Job Done see -->" + loc + "/output")
-shutil.rmtree(loc + "/FLCN")
+# shutil.rmtree(loc + "/FLCN")

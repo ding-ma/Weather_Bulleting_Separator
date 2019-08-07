@@ -4,10 +4,10 @@ import re
 from datetime import datetime
 
 monthdict = dict((v, k) for k, v in enumerate(calendar.month_name))
-file = open("2019-08-05_14-10-26_FLCN41_bulletin_messages.txt", "r").read()
-beginingofdate = re.compile("AT(\n)?(.+(2019|2018))")
+file = open("Input/2015.txt", "r").read()
+beginingofdate = re.compile("AT (\n|.*)(\n)?\d{4}")
 # LCN41 CWUL (.*\n)*(END)\n\nFLCN41
-start = re.compile("FLCN41 CWUL")
+start = re.compile("FLCN41 CWUL \d{6}( AA.)?")
 end = re.compile("END")
 templst = []
 datelst = []
@@ -20,14 +20,14 @@ def fixtime(time):
     day = time[4]
     time_12h = time[0] + " " + time[1].replace(".", "")
     yearMonthDay = datetime.strptime(year + " " + str(month) + " " + str(day) + " " + time_12h,
-                                     "%Y %m %d %I:%M %p").strftime("%p-%Y%m%d-%H%M")
+                                     "%Y %m %d %I.%M %p").strftime("%p-%Y%m%d-%H%M")
     return yearMonthDay
 
 
 for y in start.finditer(file):
     yearstr = file[y.start():y.end() + 410]
     for s in beginingofdate.finditer(yearstr):
-        fixedTime = fixtime(yearstr[s.start() + 3:s.end()].split(" "))
+        fixedTime = fixtime(re.split("\n|\s", yearstr[s.start() + 3:s.end()]))
         t.append(yearstr[s.start() + 3:s.end()])
         templst.append(fixedTime)
 

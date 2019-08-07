@@ -1,6 +1,16 @@
+import os
 import re
+import shutil
 import urllib.request
 from datetime import datetime, timedelta
+
+path = "/fs/home/fs1/eccc/oth/airq_central/sair001/public_html/bulletin_infoSmog/"
+
+if os.path.exists(path + "tempdir"):
+    shutil.rmtree(path + "tempdir")
+    os.mkdir(path + "tempdir")
+else:
+    os.mkdir(path + "tempdir")
 
 today = datetime.today()
 yesterday = (today - timedelta(days=1)).strftime("%Y%m%d")
@@ -17,4 +27,9 @@ for h in hourslst:
         req1 = urllib.request.Request(pageULR)
         response1 = urllib.request.urlopen(req1)
         the_page1 = response1.read()
-        urllib.request.urlretrieve(pageULR, "downloads/CWUL_FLCN41_" + yesterday + "_h_" + h + ".txt")
+        urllib.request.urlretrieve(pageULR,
+                                   "/home/sair001/public_html/bulletin_infoSmog/datamart_downloads/CWUL_FLCN41_" + yesterday + "_h_" + h + ".txt")
+        urllib.request.urlretrieve(pageULR,
+                                   "/home/sair001/public_html/bulletin_infoSmog/tempdir/CWUL_FLCN41_" + yesterday + "_h_" + h + ".txt")
+
+os.system("cd /home/ && /usr/bin/python3 /home/sair001/public_html/bulletin_infoSmog/script/infoSmog-DailyScript.py")
