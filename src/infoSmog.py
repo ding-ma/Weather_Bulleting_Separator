@@ -19,13 +19,13 @@ for dir in dirs:
     if not os.path.exists(loc + "/" + dir):
         os.mkdir(loc + "/" + dir)
 monthdict = dict((v, k) for k, v in enumerate(calendar.month_name))
-print("Select the name of the file you would like to treat and press enter\n")
+print("Select the name of the file you would like to treat and press enter")
 for F in os.listdir(loc + "/Input"):
     if not os.path.exists(loc + "/Input"):
         os.mkdir(loc + "/Input")
     print(F)
 
-filein = "2018.txt"
+filein = input()
 file = open("Input/" + filein, "r").read()
 beginingofdate = re.compile(("AT(\n.*|.*|.*\n.*)\d{4}"))
 # LCN41 CWUL (.*\n)*(END)\n\nFLCN41
