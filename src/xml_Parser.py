@@ -40,9 +40,9 @@ def paireCalculator(time, forecast):
 
 templist = ["Site,Province,isueTime,AM_PM,Paire,CASe"]
 # file in, add loop for later
-for f in os.listdir("process"):
+for f in os.listdir("a"):
     print(f)
-    tree = ET.ElementTree(file="process/" + f)
+    tree = ET.ElementTree(file="a/" + f)
     root = tree.getroot()
 
     time = ""
@@ -62,10 +62,14 @@ for f in os.listdir("process"):
             # print(region[0].text, "month:" + region[1].text, "day:" + region[2].text,
             #       region[3].text + region[3].attrib['ampm'])
             if region[3].attrib['ampm'] == "PM":
-                format24h = int(region[3].text) + 12
+                if int(region[3].text) != 12:
+                    format24h = int(region[3].text) + 12
+                else:
+                    format24h = int(region[3].text)
             else:
                 format24h = int(region[3].text)
             time = region[3].attrib['ampm']
+            print(int(region[0].text), int(region[1].text), int(region[2].text), int(format24h))
             issuetime = datetime.datetime(int(region[0].text), int(region[1].text), int(region[2].text), int(format24h))
 
     print("-----")

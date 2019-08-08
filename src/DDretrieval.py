@@ -48,7 +48,7 @@ for hourdigit in findalldigits.finditer(hourpage):
                                        path + "datamart_downloads/CWUL_FLCN41_" + yesterday + "_h_" + hourdigit.group()[
                                                                                                       1:] + ".txt")
         except urllib.error.HTTPError:
-            sendemail("Error occured while downloading FLCN41-CWUL for hour: " + hourdigit.group()[1:])
+            sendemail("Error occured while downloading FLCN41-CWUL bulletin for hour: " + hourdigit.group()[1:])
 
 if len(hlst) < 2:
     sendemail("Less than 2 bulletins was downloaded for " + yesterday)
