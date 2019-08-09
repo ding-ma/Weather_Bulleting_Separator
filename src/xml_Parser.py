@@ -4,6 +4,17 @@ import os
 import re
 import xml.etree.ElementTree as ET
 
+# cleans up xml file from the junk underneath.
+a = re.compile("-.-.-.-.-.-.-.-.-.-.-.-.-")
+templst = []
+for file in os.listdir("process"):
+    f = open("process/" + file, "r")
+    fread = f.read()
+    for b in a.finditer(fread):
+        fout = open("a/" + file, "w+")
+        fout.write(fread[:b.start()])
+
+
 # reads csv to make converter
 lstsite = []
 lstprov = []
@@ -38,7 +49,7 @@ def paireCalculator(time, forecast):
         return "-"
 
 
-templist = ["Site,Province,isueTime,AM_PM,Paire,CASe"]
+templist = ["Site,Province,isueTime,AM_PM,Paire,CASe,CASi,File"]
 # file in, add loop for later
 for f in os.listdir("a"):
     print(f)
@@ -59,8 +70,6 @@ for f in os.listdir("a"):
             site = ident[0].strip()
             province = ident[1].strip()
         if region.tag == "dateStamp":
-            # print(region[0].text, "month:" + region[1].text, "day:" + region[2].text,
-            #       region[3].text + region[3].attrib['ampm'])
             if region[3].attrib['ampm'] == "PM":
                 if int(region[3].text) != 12:
                     format24h = int(region[3].text) + 12
@@ -75,21 +84,27 @@ for f in os.listdir("a"):
     print("-----")
     # find in smoke
     for insmoke in root[4]:
-        print(insmoke[0].attrib['forecastName'])
-        case = re.findall("\d", insmoke[2].text)
-        print("CASe: " + str(case))
-        a = paireCalculator(time, insmoke[0].attrib['forecastName'])
-        print(a)
-        if len(case) is 2:
-            towrite = site + "," + province + "," + issuetime.strftime(
-                "%Y/%m/%d %H:00:00") + "," + time + "," + a + "," + case[0] + case[1]
-            templist.append(towrite)
-            print(towrite)
-        else:
-            towrite1 = site + "," + province + "," + issuetime.strftime(
-                "%Y/%m/%d %H:00:00") + "," + time + "," + a + "," + case[0]
-            templist.append(towrite1)
-            print(towrite1)
+        # if the len is 3, it means that it doesnt contain in smoke exception
+        if len(insmoke) is 4:
+            print(insmoke[0].attrib['forecastName'])
+            case = re.findall("\d", insmoke[3].text)
+            print("CASe: " + str(case))
+            casi = re.findall("\d", insmoke[2].text)
+            print("CASi: " + str(casi))
+            a = paireCalculator(time, insmoke[0].attrib['forecastName'])
+            print("paire: " + a)
+
+            # for the ["1","0"] CASe, it needs to be together.
+            if len(case) is 2:
+                towrite = site + "," + province + "," + issuetime.strftime(
+                    "%Y/%m/%d %H:00:00") + "," + time + "," + a + "," + case[0] + case[1] + "," + casi[0] + "," + f
+                templist.append(towrite)
+                print(towrite)
+            else:
+                towrite1 = site + "," + province + "," + issuetime.strftime(
+                    "%Y/%m/%d %H:00:00") + "," + time + "," + a + "," + case[0] + "," + casi[0] + "," + f
+                templist.append(towrite1)
+                print(towrite1)
     print("-----------------------------------------------------------------------------------")
 
 csvFile = open("out.csv", "w+")
