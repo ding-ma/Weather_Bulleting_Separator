@@ -4,15 +4,21 @@ import os
 import re
 import xml.etree.ElementTree as ET
 
+path = os.getcwd()
+basedirectories = ["input", "temp"]
+for bdir in basedirectories:
+    if os.path.exists(path + "/" + bdir) is False:
+        os.mkdir(path + "/" + bdir)
+
 # cleans up xml file from the junk underneath. Need to run this script seperatly from the other
-# a = re.compile("-.-.-.-.-.-.-.-.-.-.-.-.-")
-# templst = []
-# for file in os.listdir("process"):
-#     f = open("process/" + file, "r")
-#     fread = f.read()
-#     for b in a.finditer(fread):
-#         fout = open("a/" + file, "w+")
-#         fout.write(fread[:b.start()])
+a = re.compile("-.-.-.-.-.-.-.-.-.-.-.-.-")
+templst = []
+for file in os.listdir("input"):
+    f = open("process/" + file, "r")
+    fread = f.read()
+    for b in a.finditer(fread):
+        fout = open("temp/" + file, "w+")
+        fout.write(fread[:b.start()])
 
 ###########################################################################
 
@@ -91,9 +97,9 @@ def convertToUTC(timezone, timeToChange):
 templist = [
     "Site,Province,issueTime(Local),isueTime (UTC),AM_PM(Local Format),Morning/Afternoon,Paire,CASe,CASi,Status,File"]
 # file in, add loop for later
-for f in os.listdir("a"):
+for f in os.listdir("temp"):
     print(f)
-    tree = ET.ElementTree(file="a/" + f)
+    tree = ET.ElementTree(file="temp/" + f)
     root = tree.getroot()
     status = tree.find("status")
     time = ""
@@ -154,6 +160,6 @@ for f in os.listdir("a"):
                 print(towrite1)
     print("-----------------------------------------------------------------------------------")
 
-csvFile = open("out-UTC.csv", "w+")
+csvFile = open("2019_insmoke-UTC.csv", "w+")
 for i in templist:
     csvFile.write(i + "\n")
