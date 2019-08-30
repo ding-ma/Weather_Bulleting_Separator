@@ -139,10 +139,11 @@ for files, amd in zip(os.listdir(path + "tempdir"), lstofAmendment):
                     i = i + 1
 
 # save dataFrame to csv
-if not os.path.exists(path + "Output/treated_" + str(thisyear) + ".csv"):
-    df.to_csv(path + "Output/treated_" + str(thisyear) + ".csv", mode='a', index=False, index_label=False)
+filename = path + "Output/treated_" + str(thisyear) + ".csv"
+if not os.path.exists(filename):
+    df.to_csv(filename, mode='a', index=False, index_label=False)
 else:
-    df.to_csv(path + "Output/treated_" + str(thisyear) + ".csv", header=None, mode='a', index=False,
+    df.to_csv(filename, header=None, mode='a', index=False,
               index_label=False)
 
 shutil.rmtree(path + "tempdir")

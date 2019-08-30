@@ -2,6 +2,7 @@ import calendar
 import collections
 import os
 import re
+import shutil
 import sys
 from datetime import datetime
 
@@ -178,4 +179,4 @@ for files, amd in zip(os.listdir("FLCN"), lstofAmendment):
 # save dataFrame to csv
 df.to_csv("Output/treated_" + filein[:-4] + ".csv", index=False, index_label=False)
 print("Job Done see -->" + loc + "/output")
-# shutil.rmtree(loc + "/FLCN")
+shutil.rmtree(loc + "/FLCN")
